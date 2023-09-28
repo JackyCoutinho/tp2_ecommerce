@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "id": "3f5518d6-458f-4997-9c40-a187865630b1",
+      "nom": "Produit01",
+      "description": "Desc Produit 01",
+      "prix": "100",
+      "categorie": "Cat01"
+    },
+    {
+      "id": "fa63fe79-5645-4350-9f5d-9b8f2906b3f1",
+      "nom": "Produit02",
+      "description": "Desc Produit 02",
+      "prix": "120",
+      "categorie": "Cat02"
+    },
+    {
+      "id": "aa904639-aa01-478b-b951-192320fa15d1",
+      "nom": "Produit03",
+      "description": "Desc Produit 03",
+      "prix": "10",
+      "categorie": "Cat03"
+    },
+    {
+      "id": "4f189a38-adc3-4294-a58c-3177bf27ffa9",
+      "nom": "Produit04",
+      "description": "Desc Produit 04",
+      "prix": "500",
+      "categorie": "Cat04"
+    },
+    {
+      "id": "IvQzd5x",
+      "nom": "abc",
+      "description": "abc",
+      "prix": "123",
+      "categorie": "abc"
+    }
+  ]
+}

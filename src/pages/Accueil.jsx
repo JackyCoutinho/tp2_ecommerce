@@ -5,6 +5,7 @@ import IMG3 from '../assets/tv.jpg'
 
 function Accueil() {
   return (
+    //Ajouter du contenu à la page d'accueil
     <div className="container mt-5">
       <h1>Bienvenue sur Notre E-commerce</h1>
       <p>

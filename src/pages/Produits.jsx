@@ -1,5 +1,4 @@
-import React, {useState} from 'react'
-import {v4 as uuidv4} from 'uuid'
+import React, {useState, useEffect} from 'react'
 import AddProduit from '../components/AddProduit'
 
 
@@ -16,32 +15,32 @@ function Produits() {
   const [editMode, setEditMode] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
 
+  // Récupérer les produits du serveur JSON
+  useEffect(() => {
+    fetch('http://localhost:5000/products')
+      .then((response) => response.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.error('Erro ao buscar produtos:', error));
+  }, [products]);
+
+  // Envoyer un nouveau produit au serveur JSON
   const addProduct = (newProduct) => {
-    if (
-      !newProduct.nom ||
-      !newProduct.description ||
-      !newProduct.prix ||
-      !newProduct.categorie
-    ) {
-      alert("Por favor, preencha todos os campos.");
-      return;
-    }
-
-    if (editMode) {
-      const updatedProducts = products.map((p) =>
-        p.id === editProductId ? { ...p, ...newProduct } : p
-      );
-      setProducts(updatedProducts);
-      setEditMode(false);
-      setEditProductId(null);
-    } else {
-      const newProductObj = { ...newProduct, id: uuidv4() };
-      setProducts([...products, newProductObj]);
-    }
-
-    setProduct({ id: "", nom: "", description: "", prix: "", categorie: "" });
+    fetch('http://localhost:5000/products', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newProduct),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts([...products, data]);
+        setProduct({ id: '', nom: '', description: '', prix: '', categorie: '' });
+      })
+      .catch((error) => console.error('Erreur pour ajouter un produit:', error));
   };
 
+  // Remplit les informations pour une mise à jour
   const editProduct = (id) => {
     const productToEdit = products.find((p) => p.id === id);
     setProduct(productToEdit);
@@ -49,11 +48,36 @@ function Produits() {
     setEditProductId(id);
   };
 
-  const deleteProduct = (id) => {
-    const updatedProducts = products.filter((p) => p.id !== id);
-    setProducts(updatedProducts);
-    setEditMode(false);
-    setEditProductId(null);
+  // Mettre a jour un produit dans le serveur JSON
+  const updateProduct = (newProduct) =>{
+    fetch(`http://localhost:5000/products/${newProduct.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newProduct),
+    })
+      .then((response) => response.json())
+      .then((updatedProduct) => {
+        setProducts((prevProducts)=> prevProducts.map((product) => product.id === newProduct.id ? {...product, updatedProduct}: product ))
+        setProduct({ id: '', nom: '', description: '', prix: '', categorie: '' });
+        setEditMode(false);
+      })
+      .catch((error) => console.error('Erreur pour mettre a jour le produit:', error));
+  }
+  
+  // Supprimer le produit du serveur JSON
+  const deleteProduct = (id) => {  
+    fetch(`http://localhost:5000/products/${id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        const updatedProducts = products.filter((p) => p.id !== id);
+        setProducts(updatedProducts);
+        setEditMode(false);
+        setEditProductId(null);
+      })
+      .catch((error) => console.error('Erreur lors de la suppression du produit:', error));
   };
 
 
@@ -63,6 +87,7 @@ function Produits() {
           <AddProduit
             product={product}
             onAddProduct={addProduct}
+            onUpdateProduct={updateProduct}
             editMode={editMode}
             setEditMode={setEditMode}
           />

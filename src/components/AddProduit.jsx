@@ -1,6 +1,6 @@
 import React,{useState, useEffect} from 'react'
 
-function AddProduit({product, onAddProduct, editMode}) {
+function AddProduit({product, onAddProduct, onUpdateProduct, editMode, setEditMode}) {
 
     const [newProduct, setNewProduct] = useState(product);
     
@@ -12,7 +12,26 @@ function AddProduit({product, onAddProduct, editMode}) {
         onAddProduct(newProduct);
       };
 
+      const handleUpdateProduct = () => {
+        fetch(`http://localhost:5000/products/${newProduct.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct),
+      })
+        .then((response) => response.json())
+        .then((updatedProduct) => {
+          // Chamar a função de callback para atualizar o estado na aplicação principal
+          onUpdateProduct(updatedProduct);
+          setEditMode(false);
+        })
+        .catch((error) => console.error('Erro ao editar produto:', error));
+      };
+
+
       return (
+        // Ajouter le formulaire d'ajout et de mise à jour de produits
         <div className="container mt-3 mb-3">
           <h2>{editMode ? 'Modifier un Produit' : 'Ajouter un Produit'}</h2>
           <div className="form-group">
@@ -67,9 +86,10 @@ function AddProduit({product, onAddProduct, editMode}) {
               }
             />
           </div>
-          <button className="btn btn-primary mt-2" onClick={handleAddProduct}>
-            {editMode ? 'Mettre a jour' : 'Ajouter'}
-          </button>
+          {editMode ?
+          <button className="btn btn-primary mt-2" onClick={handleUpdateProduct}>Metre a jour</button> :
+          <button className="btn btn-primary mt-2" onClick={handleAddProduct}>Ajouter</button>
+          }
         </div>
       );
     }

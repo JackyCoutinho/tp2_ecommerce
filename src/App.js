@@ -6,7 +6,7 @@ import Produits from "./pages/Produits";
 function App() {
   return (
     <div className="App">
-      <Router basename="/projet1/build">
+      <Router>
         <Navbar />
         <Routes>
           <Route path="/" element={<Accueil />} />
